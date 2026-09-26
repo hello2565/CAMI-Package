@@ -1,28 +1,26 @@
 # CAMI-Package — 卡拉彼丘 (Calabiyau / Strinova) 3DMigoto 包
 
-SSMT4 的 **CAMI** 预设配套包：提供 `d3dx.ini`、`Mods/`、`ShaderFixes/`、
-`nvapi64.dll` 与卸载脚本。SSMT4 会在安装/更新包时把本仓库内容解压到
-3DMigoto 目录。
+SSMT4 的 **CAMI** 预设配套包：提供 `d3dx.ini`、`Mods/`、`ShaderFixes/`
+与卸载脚本。SSMT4 会在安装/更新包时把本仓库内容解压到 3DMigoto 目录。
 
-## 重要：运行时 d3d11.dll 必须使用 hello2565/3Dmigoto 的构建
+## 运行时 d3d11.dll 的来源（重要）
 
-卡拉彼丘通过 WeGame 启动，游戏创建 D3D11 设备早于注入时机，
-**普通 XXMI 运行时无法注入**。必须使用
-[hello2565/3Dmigoto](https://github.com/hello2565/3Dmigoto) 的
-**late-attach（后注入）构建**：游戏先创建设备/交换链，3DMigoto 在
-CreateSwapChain 时接管已有设备。
+本包基于 **SpectrumQT/XXMI-Libs-Package** 基底构建（SSMT mod 的目标运行时），
+并额外保留了 **late-attach（后注入）** 支持——卡拉彼丘通过 WeGame 启动时
+先创建 D3D11 设备，普通 XXMI 运行时无法注入，late-attach 构建才能接管
+已有设备。
 
-SSMT4 的 CAMI 预设已将该仓库的 release（`CAMI-3DMigoto_v*.zip`，
-内含 x64 `d3d11.dll`）作为运行时 dll 来源；本包不再附带 d3d11.dll。
-`nvapi64.dll` 由本包附带（更新不频繁）。
+d3d11.dll 来自 [hello2565/3Dmigoto](https://github.com/hello2565/3Dmigoto)
+的 release（资产 `XXMI-PACKAGE-v*.zip`），SSMT4 的 CAMI 预设会自动下载并
+安装。本包不附带任何 dll。
 
 ## 手动安装（不用 SSMT4 时）
 
-1. 从 hello2565/3Dmigoto 的 release 下载 `3Dmigoto_v*.7z`（完整包）
-   或 `CAMI-3DMigoto_v*.zip`（仅运行时 dll），取 x64 的 dll。
+1. 从 hello2565/3Dmigoto 的 release 下载 `XXMI-PACKAGE-v*.zip`，
+   取其中的 d3d11.dll（x64）。
 2. 将本仓库内容解压到游戏可执行文件同目录（或 SSMT4 管理的
-   3DMigoto 目录）。
-3. 确认 `d3dx.ini` 中 `[include] include_recursive = Mods` 处于启用状态
+   3DMigoto 目录），把 d3d11.dll 放进去。
+3. 确认 `d3dx.ini` 中 `[Include] include_recursive = Mods` 处于启用状态
    （本包默认已启用）。
 
 ## d3dx.ini 与 SSMT4 的关系
@@ -34,7 +32,7 @@ SSMT4 每次启动会改写以下键，无需手动维护：
 - `[Hunting] hunting / marking_actions / analyse_options`
 - `[Logging] show_warnings`
 
-本包额外启用了：
+本包基底（XXMI 的 d3dx.ini）默认已启用：
 
 - `[Include] include_recursive = Mods` —— 自动加载 Mods 目录
 - `[Hunting] analyse_frame = no_modifiers VK_F8` —— F8 帧分析快捷键
