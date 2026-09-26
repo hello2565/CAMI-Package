@@ -1,0 +1,37 @@
+name: Package Release
+
+# Push a tag (e.g. v1.0.0) to build the package zip that SSMT4 installs.
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  package_release:
+    runs-on: windows-2022
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get tag name
+        shell: bash
+        run: |
+          echo "TAG_NUM=${GITHUB_REF##*/}" >> $GITHUB_ENV
+
+      - name: Zip package
+        shell: bash
+        run: |
+          7z a -tzip "CAMI-Package_v${TAG_NUM}.zip" d3dx.ini uninstall.bat nvapi64.dll Mods ShaderFixes -x!README.md
+          7z l "CAMI-Package_v${TAG_NUM}.zip"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.TAG_NUM }}
+          name: CAMI-Package v${{ env.TAG_NUM }}
+          files: CAMI-Package_v${{ env.TAG_NUM }}.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
