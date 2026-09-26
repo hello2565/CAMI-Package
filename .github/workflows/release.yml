@@ -24,8 +24,8 @@ jobs:
       - name: Zip package
         shell: bash
         run: |
-          7z a -tzip "CAMI-Package_v${TAG_NUM}.zip" d3dx.ini uninstall.bat Mods ShaderFixes -x!README.md
-          7z l "CAMI-Package_v${TAG_NUM}.zip"
+          7z a -tzip "CAMI-Package_${TAG_NUM}.zip" d3dx.ini uninstall.bat Mods ShaderFixes -x!README.md
+          7z l "CAMI-Package_${TAG_NUM}.zip"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
